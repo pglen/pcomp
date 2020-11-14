@@ -61,13 +61,16 @@
 	type decl = const expr;
 	type decl = expr;
 
- Strings:
+ Constant Strings:
 
   	Between " and " or between ' and ';
 
   	Escape characters:
 
-		\r \n \" \\ \0xNN \0NN
+		\r \n \a \t \" \' \? \b \\ \v \f \e
+
+        \xXX \DD \oOO \bBBB   \uUUUU
+        hex   dec  oct  bin   unicode
 
   Aggregate:
 
@@ -76,6 +79,10 @@
 		type2 element2;
 		type3 element3;
 	   }  type_name;
+
+    array  {
+           type : dimention
+           } array_name;
 
   Functions:
 
