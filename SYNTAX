@@ -1,17 +1,18 @@
-			Syntax of the pcomp source file.
+ Syntax of the pcomp source file.
 
  Overall structure:
 
 	One or more of the following:
 
 		preprocessor statement(s)
-
 		debug statement(s)
         comment(s)
         doc comment(s)
         variable declaration(s)
-        assinment declaration(s)
+        assignments and declaration(s)
+        arithmetic and action statements
         function declaration(s)
+        function call(s)
 
  Comments:
 
@@ -29,7 +30,7 @@
 	Lines are continued on the next line if backslash is at the end.
 	Trailing spaces? no
 
- Data declareations:
+ Data declarations:
 
 	type varname;
 	type varname1, varname2 .... varnameN;
@@ -40,11 +41,17 @@
 		u8; u16; u32; 				; Unsigned integers
 		s8; s16; s32; 				; Signed integers
 
-		single,	double				; Floating point types
+		single,	double, quad		; Floating point types
+
+        pointer                     ; Pointer to data
 
 	Custom types:
 
 		type_name					; declared by struct statement
+
+ Data attributes:
+
+        constant volatile static external register
 
  Data initialization:
 
@@ -56,7 +63,7 @@
 
  Strings:
 
-  	Between " and ";
+  	Between " and " or between ' and ';
 
   	Escape characters:
 
@@ -65,9 +72,10 @@
   Aggregate:
 
 	struct	{
-		element1 type1;
-		elementN typeN;
-	}  struct type_name;
+		type1 element1;
+		type2 element2;
+		type3 element3;
+	   }  type_name;
 
   Functions:
 
@@ -76,21 +84,22 @@
 	function funcname ( arg declarelist ) { funcbody }
 
 		arg declerelist:
-		    type var, type var ...
+		    type1 var, type2 var ...
 
-		max six arguments, loaded into ax bx .. si, di
-			(al->8 bit -- ax->16 bit -- eax->32 bit)
+        // ?? TODO ??
+		//max six arguments, loaded into ax bx .. si, di
+		//	(al->8 bit -- ax->16 bit -- eax->32 bit)
 
 		Stack is not changed by the args. Optional args are not set.
 
-		Function body may contain all elements that are permtted outside of
+		Function body may contain all elements that are permitted outside of
 		function, and the return statement.
 
 		globals are allocated and initialized, uninitialized vars are zeroed
-		local variables are assined on the stack
+		local variables are assigned on the stack
 		expression temporaries are on the stack
 
-		Return value is delivered in ax.  (al, eax); If the function does not
+		Return value is delivered in rax.  (al, eax, rax); If the function does not
 		specify a return a value, zero is returned.
 
 		Because the function calls do not change the stack, functions can
@@ -99,7 +108,7 @@
 
  Allocations:
 
-		Memory is allocated in the free store, uninitialized.
+		Memory is allocated in the free store, initialized or uninitialized.
 
  Exceptions:
 
@@ -108,7 +117,7 @@
 		(excpt) and return without any action.
 		It is the application's responsibility to respond to the exception
 		condition by checking the variable against a saved value.
-		The exception variable is not reset automatically.
+		The exception pointer variable is reset, and exception report reset automatically.
 
  Expressions:
 
@@ -160,7 +169,7 @@
 		|       or
 		^       xor
 
-	Binary bitwise operetors:
+	Binary bitwise operators:
 
 		>> 	shift right
 		<< 	shift left
@@ -237,7 +246,13 @@ conflicting vars and func names are allowed either.
  Preprocessing:
 
 	Processing is controlled by defined names and ifdef statements.
-	The definitions have an exist / not exist state.
+	The definitions posess an exist / does not exist state.
+    The pre processor is executed before every other stage.
+    The preprocessor maintains the following vars:
+
+        __file__  __line__  __func__ __platform__ __target__
+        __version__
+
 
 	#define DEFVAR
 

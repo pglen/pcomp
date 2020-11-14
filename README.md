@@ -53,11 +53,25 @@ a python like supervisor.
         strbcs        r4, [r0], #1
         strbcs        ip, [r0]
 
+    #elifdef  RISC_5
+
+
     #else
 
         #error "Must specify a target processor"
 
     #endif
     }
+
+  Please see SYNTAX for an ongoing attempt to describe the new language syntax,
+ and the test directory as an accumulation of case tests.
+
+ Where is the project today?
+
+  lex and yacc skeleton done
+  first stage parser operationl
+  first stage code generator
+
+  YEP -- this is a lot of work.
 
 // End of file
