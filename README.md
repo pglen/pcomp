@@ -1,8 +1,8 @@
 # pcomp      README
 
-##Parallel compiler; Skeleton for a simple language
+## Parallel compiler; Skeleton for a simple language
 
-Pcomp is generated in an attempt to simplify programming as a whole.
+pcomp is generated in an attempt to simplify programming as a whole.
 
     * Features simple syntax and data types.
     * Support for locking and atomic access.
