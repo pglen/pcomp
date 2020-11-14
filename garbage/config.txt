@@ -1,0 +1,42 @@
+# The ftpdx config file
+#
+#  General syntax: 
+# Comments lines begin with the '#' character
+# Entries are separated by one or more white space.
+# Following entries are allowed:
+# 	User classes
+#       Directory enties
+#
+debug 10
+log 20
+debug 30
+# User class constitutes of class name and the list of users. 
+# Syntax: <class> classname user1 user2 ... [userN] <ssalc>
+# 
+<class> qwerty
+      werty erty rty ty y end
+      wwwwwwwww eeeeeeeeeeeee rrrrrrrrrrrrr ttttttttt
+aaaaaaaaaa aaaaaaaa aaaaaaa aaaaaaaaaa aaaaaaa aaaaaaaa        
+ aaaaaaaa bbbbb end cccc
+<ssalc>
+
+<class> developers
+      root peterg agnes hardware
+<ssalc>
+
+# Directory list constitutes a user class name and list of directories
+# Syntax: <dir> classname dir1 dir2 ... [dirN] <rid>
+# Special entries: 
+#             '~' for home directory
+
+<dir> qwerty
+/usr/bin /usr ~qqq rty ty y end
+      wwwwwwwww eeeeeeeeeeeee rrrrrrrrrrrrr ttttttttt
+aaaaaaaaaa aaaaaaaa aaaaaaa aaaaaaaaaa aaaaaaa aaaaaaaa        
+ aaaaaaaa bbbbb end cccc
+<rid>
+
+
+
+
+

@@ -1,0 +1,19 @@
+	// Number expansion, all expressions yield 2000
+
+ 	u32 cc1 = 2000;
+
+ 	u32 cc2 = 2000;
+ 	u32 cc3 = 2000;
+ 	u32 cc4 = 2000;
+ 	u32 cc5 = 2000;
+
+ 	u32 cc6 = 2000;
+ 	u32 cc7 = 2000;
+ 	u32 cc8 = 2000;
+
+ 	u32 cc9 = 2000;
+ 	u32 cc0 = 2000;
+
+ 	u32 cc10 = 2000;
+ 	u32 cc11 = 2000;
+

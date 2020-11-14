@@ -1,0 +1,6 @@
+// String
+
+ string	str = "hello";
+ string	str2 = str;
+
+

@@ -1,0 +1,13 @@
+	// Error messsage
+
+	
+
+    //#message ""
+    //#message "   ------- Compiler message from source code ..."
+    //#message ""
+
+	
+    //#error "Hello Error"
+    
+    
+    
