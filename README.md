@@ -24,7 +24,6 @@ a python like supervisor.
 
 
     func memcopy(const ptr *src, ptr *dest, int len)
-
     {
     #ifdef CPU_NEUTRAL
 
@@ -55,6 +54,7 @@ a python like supervisor.
 
     #elifdef  RISC_5
 
+        #warning "No code generated for RISC -- TODO"
 
     #else
 
@@ -69,9 +69,11 @@ a python like supervisor.
  Where is the project today?
 
   lex and yacc skeleton done
-  first stage parser operationl
-  first stage code generator
 
-  YEP -- this is a lot of work.
+  first stage parser operational
+
+  some progress on the code generator
+
+  YEP -- this is a lot of work. Contributors are welcome.
 
 // End of file
