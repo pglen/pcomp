@@ -14,10 +14,8 @@ use32
                dd     0x7fff0                ; esp                        
                dd     0x0 , 0x0              ; I_Param , I_Icon           
 ; Data
-var_cc1: dd  	2000
-var_cc2: dd  	2000
-var_cc3: dd  	2000
-var_cc6: dd  	2000
+var_bb: dd  	0
+var_cc: dd  	100
 
 START_CODE:
 

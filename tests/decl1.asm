@@ -14,13 +14,9 @@ use32
                dd     0x7fff0                ; esp                        
                dd     0x0 , 0x0              ; I_Param , I_Icon           
 ; Data
-; Data
-; Data
 
 START_CODE:
 
-; Code
-; Code
 ; Code
 
 

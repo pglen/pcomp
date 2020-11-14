@@ -14,17 +14,11 @@ use32
                dd     0x7fff0                ; esp                        
                dd     0x0 , 0x0              ; I_Param , I_Icon           
 ; Data
-; Data
-; Data
-; Data
 var_bbb: dw  	500
 var_ddd: dd  	10
 
 START_CODE:
 
-; Code
-; Code
-; Code
 ; Code
 
 

@@ -621,7 +621,6 @@ int     main (int argc, char **argv)
                     }
 
                 //printf ("\n");
-
 				//dump_symtab();
 
 				struct timespec ts2;
