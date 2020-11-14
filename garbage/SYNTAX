@@ -1,0 +1,265 @@
+					Syntax of the pcomp source file.
+
+ Overall structure:
+
+	One or more of the following:
+
+		preprocessor statement(s)
+
+		debug statement(s)
+        comment(s)
+        doc comment(s)
+        variable declaration(s)
+        assinment declaration(s)
+        function declaration(s)
+
+ Comments:
+
+		lines with # as the first non space
+		from // to end of line
+		between	/* */
+
+ Doc comments:
+
+		lines with ## as the first non space
+		from /// to end of line
+
+ Line continuation:
+
+	Lines are continued on the next line if backslash is at the end.
+	Trailing spaces?
+
+ Data declareations:
+
+	type varname;
+	type varname1, varname2 .... varnameN;
+	type varname = exp;
+
+	Types:
+
+		u8; u16; u32; 				; Unsigned integers
+		s8; s16; s32; 				; Signed integers
+
+		single,	double				; Floating point types
+
+	Custom types:
+
+		type_name					; declared by struct statement
+
+ Data initialization:
+
+	type decl;
+	type decl = const;
+	type decl = val;
+	type decl = const expr;
+	type decl = expr;
+
+ Strings:
+
+  	Between " and ";
+
+  	Escape characters:
+
+		\r \n \" \\ \0xNN \0NN
+
+  Aggregate:
+
+	struct	{
+		element1 type1;
+		elementN typeN;
+	}  struct type_name;
+
+  Functions:
+
+	function funcname { funcbody }
+
+	function funcname ( arg declarelist ) { funcbody }
+
+		arg declerelist:
+		    type var, type var ...
+
+		max six arguments, loaded into ax bx .. si, di
+			(al->8 bit -- ax->16 bit -- eax->32 bit)
+
+		Stack is not changed by the args. Optional args are not set.
+
+		Function body may contain all elements that are permtted outside of
+		function, and the return statement.
+
+		globals are allocated and initialized, uninitialized vars are zeroed
+		local variables are assined on the stack
+		expression temporaries are on the stack
+
+		Return value is delivered in ax.  (al, eax); If the function does not
+		specify a return a value, zero is returned.
+
+		Because the function calls do not change the stack, functions can
+		be called without a prototype. The function itself is responsible
+		to restore the stack allocated during execution.
+
+ Allocations:
+
+		Memory is allocated in the free store, uninitialized.
+
+ Exceptions:
+
+		The kill exception terminates the application by default.
+		Other exceptions set (increment) the appropriate exception variable,
+		(excpt) and return without any action.
+		It is the application's responsibility to respond to the exception
+		condition by checking the variable against a saved value.
+		The exception variable is not reset automatically.
+
+ Expressions:
+
+		Expressions are evaluated much like in 'C'. New operators are introduced,
+		and the order of precendece follows industrial conventions.
+		The operators are obeying the signed / unsigned interpretation
+		of variables, in case the oparator sign-nesses are in conflict,
+		the compiler reports an error.
+
+ Type conversions:
+
+		Casting not required upwards, to larger storage size. Size promotion
+		is automatic.
+
+		(type)	cast to type
+
+	Grouping:
+
+		( .. )	give precedence to expression in braces
+
+	Unary:
+
+        !	   	not bitwise
+	 	!!		not logical
+		&      	address of
+		*		dereference of
+		-  		unary minus
+		^  		power of
+		++		increment (pre only)
+		--		decrement (pre only)
+
+    Binary:
+
+		*		multiply
+		/ 		divide
+		% 		modulus
+		+		addition
+		-		substration
+
+	Binary Logical:
+
+	 	&&		and
+	 	||      or
+	 	^^      xor
+
+	Binary Bitwise:
+
+		&       and
+		|       or
+		^       xor
+
+	Binary bitwise operetors:
+
+		>> 	shift right
+		<< 	shift left
+
+		<<<  rotate left
+		>>>  rotate right
+
+ Conditionals:
+
+		>		larger  (left larger then right)
+        <		smaller
+		>=		larger equal
+        <=		smaller eaual
+        ==		equal
+        !=		not equal
+
+  Assinments:
+
+		=		expr
+		=		cond
+		=		const
+
+  Conditional elements:
+
+	if(condition)
+		{
+		}
+	elseif(condition2)
+		{
+		}
+	else
+		{
+		}
+
+ Looping elements:
+
+ 	loop
+	 	{
+	 	if(condition)
+		 	break;
+        if(condition2)
+            continue;
+	 	}
+
+  Looping creates an infinite loop, and break conditions need to be tested.
+
+ Execution control:
+
+  The goto statement transfers control to the label. Intra function
+  goto only;
+
+	label:
+	goto label;
+
+
+Additional language features:
+
+	No duplicate definitions of variables are permitted. This is to
+prevent local variables overriding global variables, a common source of errors
+in traditional languages. Variables and functions share the same name space, so no
+conflicting vars and func names are allowed either.
+
+ 	No nested functions.
+
+ Command line:
+
+ ./pcomp [option(s)] file(s)
+
+	The assembler file is generated with the same file name as
+	the sorce with the .asm extension.
+	The preprocessing file is generated with the same file name as
+	the sorce with the .pcc extension.
+
+ Preprocessing:
+
+	Processing is controlled by defined names and ifdef statements.
+	The definitions have an exist / not exist state.
+
+	#define DEFVAR
+
+    #ifdef  DEFVAR
+		 Statement list
+    #elifdef  DEFVAR2
+		 Statement list2
+	#else
+		 Statement list3
+	#endif
+
+	#macro	MACNAME(arg1, arg2 ... argn)
+		 Statement list
+	#endmac
+
+	#error    "Message to display"
+
+	#message  "Message to display"
+
+
+# EOF
+
+
+
+

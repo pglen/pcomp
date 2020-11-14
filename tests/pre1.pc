@@ -1,0 +1,13 @@
+// Preprocessing
+
+#define HELLO2 // #define hello
+
+	//#undef HELLO2
+ 	// hello
+
+#ifdef HELLO2
+	// compiled hello2
+ 	u32 bb = 0;
+ 	u32 cc = 100;
+#endif
+

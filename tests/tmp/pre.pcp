@@ -1,0 +1,21 @@
+// Preprocessing
+
+	// wwww
+ // eeee
+
+	int before = 0;
+
+
+ // else
+    str = "compiled at #else";
+
+
+
+    str = "compiled at #else";  // comp at else
+
+
+	//always in the mix
+    int after = 1;
+
+
+

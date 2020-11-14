@@ -1,0 +1,7 @@
+	// Number expansion, dec, hex (0x), octal (0y), binary (0z)
+	// Should display 2000
+
+ 	u32 cc1 = 2000;
+ 	u32 cc2 = 0x900 - 304;
+ 	u32 cc3 = 0y5000 - 512 - 48;
+ 	u32 cc6 = 0z11100000000 + 208;
