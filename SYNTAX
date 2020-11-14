@@ -1,4 +1,7 @@
- Syntax of the pcomp source file.
+                            SYNTAX
+
+  Syntax of the pcomp source file. This is not meant to be a spec, more
+like a draft or idea starter.
 
  Overall structure:
 
@@ -261,23 +264,23 @@ conflicting vars and func names are allowed either.
         __version__
 
 
-	#define DEFVAR
+	%define DEFVAR
 
-    #ifdef  DEFVAR
+    %ifdef  DEFVAR
 		 Statement list
-    #elifdef  DEFVAR2
+    %elifdef  DEFVAR2
 		 Statement list2
-	#else
+	%else
 		 Statement list3
-	#endif
+	%endif
 
-	#macro	MACNAME(arg1, arg2 ... argn)
+	%macro	MACNAME(arg1, arg2 ... argn)
 		 Statement list
-	#endmac
+	%endmac
 
-	#error    "Message to display"
+	%error    "Message to display"
 
-	#message  "Message to display"
+	%message  "Message to display"
 
 
 # EOF

@@ -2505,6 +2505,8 @@ void yyfree (void * ptr )
 
 /* ========================= End of LEX ================================ */
 
+extern int verbose;
+
 ///////////////////////////////////////////////////////////////////////////
 
 int 	preprocess(char *ptr)
@@ -2597,7 +2599,7 @@ int 	preprocess(char *ptr)
 
 	int	olderrcnt = errorcount;
 
-	if(!noprog)
+	if(verbose)
 		printf ("Pre processing: '%s' ", ptr);
 
 	struct timespec ts;
@@ -2613,7 +2615,7 @@ int 	preprocess(char *ptr)
 
 	int ret = getretcode();
 
-	if(!noprog)
+	if(verbose)
 		{
 		if(ret == 0 && (olderrcnt == errorcount))
 			printf ("OK %d sec %d usec\n", dts, dtu);

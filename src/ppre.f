@@ -330,6 +330,8 @@ FNN  [\~_a-zA-Z0-9]
 
 /* ========================= End of LEX ================================ */
 
+extern int verbose;
+
 ///////////////////////////////////////////////////////////////////////////
 
 int 	preprocess(char *ptr)
@@ -422,7 +424,7 @@ int 	preprocess(char *ptr)
 
 	int	olderrcnt = errorcount;
 
-	if(!noprog)
+	if(verbose)
 		printf ("Pre processing: '%s' ", ptr);
 
 	struct timespec ts;
@@ -431,23 +433,17 @@ int 	preprocess(char *ptr)
 	struct timespec ts2;
 	//sleep(2); // test time measurement
 	clock_gettime(CLOCK_REALTIME, &ts2);
-
     fclose(ppfp3);
-
 	int dts, dtu; calc_usec_diff(&ts, &ts2, &dts, &dtu);
-
 	int ret = getretcode();
-
-	if(!noprog)
+	if(verbose)
 		{
 		if(ret == 0 && (olderrcnt == errorcount))
 			printf ("OK %d sec %d usec\n", dts, dtu);
 		else
 			printf ("Compiled: '%s' ERR %d sec %d usec\n", ptr, dts, dtu);
 		}
-
 	fclose(ppfp2);
-
 	if(catpre)
 		{
 		printf("Displaying pre processed file:\n\n");

@@ -164,7 +164,6 @@ int	gen_code()
 		   		{
 		   		decl_arit(sp, "div", 2);
 		   		}
-
 			}
 
 		if(errstate)
@@ -183,31 +182,63 @@ int	gen_code()
 
 }
 
+char *prolstr = "\
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\
+;                                                                         \n\
+;   Compile with NASM                                                     \n\
+;                                                                         \n\
+                                                                          \n\
+        global main                                                       \n\
+        extern printf                                                     \n\
+        section .text                                                     \n\
+                                                                          \n\
+main:                                                                     \n\
+        push    rdx                     ; callee-save registers           \n\
+        push    rsi                     ; callee-save registers           \n\
+        push    rdi                                                       \n\
+                                                                          \n\
+        mov     rsi, 1                  ; current value                   \n\
+        mov     rdi, 10                 ; counter                         \n\
+                                                                          \n\
+L1:                                                                       \n\
+        push    rsi                     ; caller-save register            \n\
+        push    rdi                     ; caller-save register            \n\
+                                                                          \n\
+        mov     rdx, rdi                ; third rdx                       \n\
+                                        ; sec parm rsi (alread OK)        \n\
+        mov     rdi, format             ; set 1st parameter (format)      \n\
+                                                                          \n\
+        call    printf                                                    \n\
+                                                                          \n\
+        pop     rdi                                                       \n\
+        pop     rsi                                                       \n\
+                                                                          \n\
+        add     rsi, rsi                ; double value                    \n\
+        dec     rdi                     ; keep counting                   \n\
+                                                                          \n\
+        jne     L1                                                        \n\
+                                                                          \n\
+        pop     rdi                                                       \n\
+        pop     rsi                                                       \n\
+        pop     rdx                                                       \n\
+        ret                                                               \n\
+                                                                          \n\
+        section .data                                                     \n\
+                                                                          \n\
+format: db      \'%d %d\', 10, 0                                          \n\
+format2: db      \"Hello world\", 10, 0                                   \n\
+                                                                          \n\
+";
+
 int	prologue()
 
 {
 	if(noprologue)
 		return;
-
-fprintf(asmfp, "\
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\
-;                                                                         \n\
-;   Compile with FASM                                                     \n\
-;                                                                         \n\
-                                                                          \n\
-use32                                                                     \n\
-               org    0x0                                                 \n\
-                                                                          \n\
-               db    'SIMOS01'               ; 8 byte id                  \n\
-               dd     0x01                   ; header version             \n\
-               dd     START_CODE             ; start of code              \n\
-               dd     END_CODE               ; size of image              \n\
-               dd     0x100000               ; memory for app             \n\
-               dd     0x7fff0                ; esp                        \n\
-               dd     0x0 , 0x0              ; I_Param , I_Icon           \n\
-");
-
+    fprintf(asmfp, prolstr);
+    return 0;
 }
+
 
 int	epilogue()
 

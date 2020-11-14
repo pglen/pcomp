@@ -18,6 +18,7 @@ int 	catsrc = 0;
 int 	catpre = 0;
 int		interlace_sym = 0;
 int		noassembly = 0;
+int		nolink = 0;
 int		showallocbuff = 0;
 int		noprog = 0;
 int		nocompile = 0;
@@ -25,7 +26,8 @@ int		verbose = 0;
 int		nopre = 0;
 
 static	char tmp_str2[1024];
-static	char outfile[128] = {0,};
+static	char outfile[MAX_VARLEN] = {0,};
+static	char outtmp[MAX_VARLEN] = {0,};
 
 extern char ppfile2[];
 
@@ -475,7 +477,7 @@ int     main (int argc, char **argv)
            {0, 0, 0, 0}
        	};
 
-    	cc = getopt_long (argc, argv, "abcd:012fhio:lmnpqrstvy",
+    	cc = getopt_long (argc, argv, "abcd:012fhio:lmnpqrstvyk",
                         long_options, &option_index);
 
                if (cc == -1)
@@ -498,6 +500,11 @@ int     main (int argc, char **argv)
                 case 'a':
                    //printf ("option a\n");
                    noassembly = 1;
+                   break;
+
+                case 'k':
+                   //printf ("option k\n");
+                   nolink = 1;
                    break;
 
                case 'b':
@@ -551,7 +558,8 @@ int     main (int argc, char **argv)
                case 'o':
                    //printf ("option o\n");
                    strncpy(outfile, optarg, sizeof(outfile));
-                   printf("outfile: '%s'\n", outfile);
+                   if(verbose)
+                       printf("outfile: '%s'\n", outfile);
                    break;
 
                case 'p':
@@ -581,7 +589,7 @@ int     main (int argc, char **argv)
                    break;
 
                case 'v':
-                   printf ("option v\n");
+                   //printf ("option v\n");
                    verbose = 1;
                    break;
 
@@ -658,7 +666,8 @@ int     compile(char *ptr)
 	int ret_val = 1;
 	struct stat buf;
 
-    printf("Compile: '%s'.\n", ptr);
+    if(verbose)
+        printf("Compile: '%s'\n", ptr);
 
 	// re - initialize compiler
 
@@ -723,6 +732,7 @@ int     compile(char *ptr)
 		{
 		strcpy(asmfile, last + 1);
 		}
+
 	char asmfile2[MAX_VARLEN];
 	strcpy(asmfile2, outdir);
 	strcat(asmfile2, asmfile);
@@ -731,10 +741,33 @@ int     compile(char *ptr)
 		{
 		*last3 = '\0';
 		strcat(asmfile2, ".asm");
-		//printf("asm2: '%s'\n", asmfile2);
+		if(verbose)
+            printf("asm2: '%s'\n", asmfile2);
 		}
 
-	asmfp = fopen(asmfile2, "w");
+	char objfile2[MAX_VARLEN];
+	strcpy(objfile2, outdir);
+	strcat(objfile2, asmfile);
+	char *last4 = strrchr(objfile2, '.');
+	if (last4 != NULL)
+		{
+		*last4 = '\0';
+		strcat(objfile2, ".o");
+		if(verbose)
+    		printf("obj2: '%s'\n", objfile2);
+		}
+
+    strcpy(outtmp, outdir);
+	strcat(outtmp, asmfile);
+	char *last5 = strrchr(outtmp, '.');
+	if (last5 != NULL)
+		{
+		*last5 = '\0';
+		if(verbose)
+    		printf("outtmp: '%s'\n", outtmp);
+		}
+
+    asmfp = fopen(asmfile2, "w");
 
 	if(!asmfp)
 		{
@@ -787,12 +820,27 @@ int     compile(char *ptr)
 
 	if(!noassembly)
 		{
-		sprintf(tmp_str, "fasm %s > /dev/null\n", asmfile2);
-		//printf("Assembly %s\n", tmp_str);
+		sprintf(tmp_str, "nasm -felf64 %s > /dev/null\n", asmfile2);
+        if(verbose)
+            printf("Assembly: '%s'\n", tmp_str);
+
 		int ret = system(tmp_str);
 		if(ret != 0)
 			{
 			printf("Assembly failed.\n\n");
+			ret_val = 0;
+			}
+		}
+
+	if(!nolink)
+		{
+		sprintf(tmp_str, "gcc -no-pie %s -o %s > /dev/null\n", objfile2, outtmp);
+        if(verbose)
+            printf("Linking %s\n", tmp_str);
+		int ret = system(tmp_str);
+		if(ret != 0)
+			{
+			printf("Linking failed.\n\n");
 			ret_val = 0;
 			}
 		}
@@ -803,10 +851,8 @@ int     compile(char *ptr)
 		sprintf(tmp_str, "cat %s\n", asmfile2);
 		int ret = system(tmp_str);
 		}
-
     return ret_val;
 }
-
 
 ///////////////////////////////////////////////////////////////////////////
 //

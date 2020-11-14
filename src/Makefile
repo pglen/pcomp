@@ -16,8 +16,8 @@ LEX = flex
 #LDFLAGS = -s -v
 #LDFLAGS =
 
-LIBS = -lm -lefence
-#LIBS =
+#LIBS = -lm -lefence
+LIBS = -lm
 
 # Debug
 #LIBS = -Wl,--no-as-needed -lefence -lm -lrt -lc
