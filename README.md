@@ -20,12 +20,12 @@ a python like supervisor.
 
  The conditional compilation would let the assembler choose the correct processor.
 
- Even if the following snippet is largely hypothetical; it demonstrates the pion:
+ Even if the following snippet is largely hypothetical; it demonstrates the point:
 
 
-func memcopy(const ptr *src, ptr *dest, int len)
+    func memcopy(const ptr *src, ptr *dest, int len)
 
-{
+    {
     #ifdef CPU_NEUTRAL
 
         char *d = dest;
@@ -58,4 +58,6 @@ func memcopy(const ptr *src, ptr *dest, int len)
         #error "Must specify a target processor"
 
     #endif
-}
+    }
+
+// End of file
