@@ -74,6 +74,10 @@ a python like supervisor.
 
   some progress on the code generator
 
+  updated debug subsys ... can observe preprocessor stages
+
+  print options for lex / yacc stages / progress
+
   YEP -- this is a lot of work. Contributors are welcome.
 
 // End of file

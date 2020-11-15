@@ -4,6 +4,7 @@
 
 #include "../symtab.h"
 #include "../emalloc.h"
+#include "../pcomp.h"
 
 // Flags for operation. Some referenced in other files.
 
@@ -29,11 +30,7 @@ static	char tmp_str2[1024];
 static	char outfile[MAX_VARLEN] = {0,};
 static	char outtmp[MAX_VARLEN] = {0,};
 
-extern char ppfile2[];
-
-void	calc_usec_diff(struct timespec *ts, struct timespec *ts2, int *pdts, int *pdtu);
-
-FILE *infp, *asmfp, *ppfp;
+FILE    *infp, *asmfp, *ppfp;
 
 int num_lines = 1, num_chars = 0, backslash = 0, prog = 0;
 
@@ -42,11 +39,15 @@ int num_lines = 1, num_chars = 0, backslash = 0, prog = 0;
                int c = getc(infp); \
                result = (c == EOF) ? YY_NULL : (buf[0] = c, 1); \
                }
+
 void conferror(const char *str)
+
 {
- static int count = 0;
-       printf("%s  Line: %d  Near '%s'\n", str, num_lines, yytext); count++;
-       if(count > 5) exit(0);
+    static int count = 0;
+    printf("%s  Line: %d  Near '%s'\n", str, num_lines, yytext); count++;
+
+    if(count > 5)
+        exit(0);
 }
 
 #define DEBUGLEX
@@ -546,7 +547,7 @@ int     main (int argc, char **argv)
                    	break;
 
                 case 'l':
-                    printf ("option l\n");
+                    //printf ("option l\n");
 					showcomm = 1;
                    	break;
 
@@ -635,12 +636,14 @@ int     main (int argc, char **argv)
 				clock_gettime(CLOCK_REALTIME, &ts2);
 
 				int dts, dtu; calc_usec_diff(&ts, &ts2, &dts, &dtu);
-				if(!noprog)
+				if(verbose)
             	 	printf("Total %d sec %d usec\n", dts, dtu);
                 }
              else
                 {
-                help();
+                //help();
+                printf("Parallel compiler. Use 'pcomp -h' for options and help.\n");
+                exit(0);
                 }
 
 	//print_emalloc();
@@ -692,8 +695,8 @@ int     compile(char *ptr)
 	if(!infp)
 		{
 		printf("Cannot open file '%s'.\n", ptr);
-		if(debuglevel > 0)
-			syslog(LOG_DEBUG, "Cannot open file %s\n", ptr);
+		//if(debuglevel > 0)
+		//	syslog(LOG_DEBUG, "Cannot open file %s\n", ptr);
 		return 0;
 		}
 
@@ -794,7 +797,7 @@ int     compile(char *ptr)
 
 	int ret = getretcode();
 
-	if(!noprog)
+	if(verbose)
 		{
 		if(ret == 0 && (olderrcnt == errorcount))
 			printf ("OK %d sec %d usec\n", dts, dtu);

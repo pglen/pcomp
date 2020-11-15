@@ -1,0 +1,31 @@
+// Preprocessing
+
+%define HELLO 	// wwww
+//define HELLOX  // eeee
+
+	int before = 0;
+
+%ifdef HELLO 	// platform
+ 	char str = "here \" we go \\ \'again' \\\" %define at %ifdef";
+%elifdef  HELLOY
+	str = "compiled %elifdef  ";
+%else
+ // else
+    str = "compiled at %else";
+%endif
+
+%ifdef HELLOX
+    // compiled in at hello
+    u32 aaa; u16 bbb; u8 ccc;
+    // comp at hello
+%elifdef  HELLOY
+    s32 ddd; s16 eee; s8 fff; // comp at helloy
+%else
+    str = "compiled at %else";  // comp at else
+%endif
+
+	//always in the mix
+    int after = 1;
+
+
+

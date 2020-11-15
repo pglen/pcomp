@@ -8,18 +8,20 @@
 
 #include "../symtab.h"
 
-static int num_lines = 1, num_chars = 0, backslash = 0;
-
+extern int verbose;
 extern	int testflex;
 extern	int debuglevel;
 extern	int noprog;
 extern	int catpre;
 
-static	char	tmp_str[256];
-static	char	tmp_str2[256];
+static int num_lines = 1, num_chars = 0, backslash = 0;
 static 	int 	prog = 0;
 
-char ppfile2[MAX_VARLEN];
+static	char	tmp_str[MAX_VARLEN];
+static	char	tmp_str2[MAX_VARLEN];
+
+char    ppfile2[MAX_VARLEN];
+char    ppfile[MAX_VARLEN];
 
 FILE *ppfp3, *ppfp2;
 
@@ -37,11 +39,9 @@ void preerror(const char *str)
     if(count > 5) exit(0);
 }
 
-
 #define DEBUGLEX
 
 #include "ppre.yacc.c"
-
 
 %}
 
@@ -60,6 +60,16 @@ FNN  [\~_a-zA-Z0-9]
 
                                 if(testflex)
                                     printf("[slash comment2] '%s", yytext);
+
+                                yylval.strval = strdup(yytext);
+								return COMMENT;
+								}
+
+#.*\n                          { /* comment */
+								num_lines++;
+
+                                if(testflex)
+                                    printf("[hash comment2] '%s", yytext);
 
                                 yylval.strval = strdup(yytext);
 								return COMMENT;
@@ -171,7 +181,7 @@ FNN  [\~_a-zA-Z0-9]
 
                                 yylval.strval = strdup(yytext); return(PAREN2);
 								}
-#error                      	{
+%error                      	{
                                 if(testflex)
                                     printf(" [error] '%s' ", yytext);
 
@@ -179,7 +189,7 @@ FNN  [\~_a-zA-Z0-9]
 								return ERR;
 								}
 
-#macro                      	{
+%macro                      	{
                                 if(testflex)
                                     printf(" [mmacro] '%s' ", yytext);
 
@@ -187,14 +197,14 @@ FNN  [\~_a-zA-Z0-9]
 								return MAC;
 								}
 
-#message                      	{
+%message                      	{
                                 if(testflex)
                                     printf(" [message] '%s' ", yytext);
 
                                 yylval.strval = strdup(yytext);
 								return MSG;
 								}
-#define                       	{
+%define                       	{
                                 if(testflex)
                                     printf(" [define] '%s' ", yytext);
 
@@ -202,7 +212,7 @@ FNN  [\~_a-zA-Z0-9]
 								return DEF;
 								}
 
-#undef                       	{
+%undef                       	{
                                 if(testflex)
                                     printf(" [undef] '%s' ", yytext);
 
@@ -210,7 +220,7 @@ FNN  [\~_a-zA-Z0-9]
 								return UNDEF;
 								}
 
-#ifdef                       	{
+%ifdef                       	{
                                 if(testflex)
                                     printf(" [ifdef] '%s' ", yytext);
 
@@ -218,7 +228,7 @@ FNN  [\~_a-zA-Z0-9]
 								return IFDEF;
 								}
 
-#elifdef                       	{
+%elifdef                       	{
                                 if(testflex)
                                     printf(" [elifdef] '%s' ", yytext);
 
@@ -226,7 +236,7 @@ FNN  [\~_a-zA-Z0-9]
 								return ELIFDEF;
 								}
 
-#else                       	{
+%else                       	{
                                 if(testflex)
                                     printf(" [else] '%s' ", yytext);
 
@@ -234,7 +244,7 @@ FNN  [\~_a-zA-Z0-9]
 								return ELSE;
 								}
 
-#endif                       	{
+%endif                       	{
                                 if(testflex)
                                     printf(" [ifdef] '%s' ", yytext);
 
@@ -330,8 +340,6 @@ FNN  [\~_a-zA-Z0-9]
 
 /* ========================= End of LEX ================================ */
 
-extern int verbose;
-
 ///////////////////////////////////////////////////////////////////////////
 
 int 	preprocess(char *ptr)
@@ -395,14 +403,12 @@ int 	preprocess(char *ptr)
 		}
     #endif
 
-	char ppfile[MAX_VARLEN];
 	strcpy(ppfile, ptr);
 	char *last = strrchr(ppfile, '/');
 	if (last != NULL)
 		{
 		strcpy(ppfile, last + 1);
 		}
-
 	strcpy(ppfile2, outdir);
 	strcat(ppfile2, ppfile);
 	char *last3 = strrchr(ppfile2, '.');
@@ -418,7 +424,7 @@ int 	preprocess(char *ptr)
 	if(!ppfp2)
 		{
 		printf("Cannot create file '%s'.\n", ppfile);
-		syslog(LOG_DEBUG, "pcomp: Cannot create asm file.\n");
+		syslog(LOG_DEBUG, "pcomp: Cannot create preprocessed file.\n");
 		return 0;
 		}
 
@@ -429,7 +435,9 @@ int 	preprocess(char *ptr)
 
 	struct timespec ts;
 	clock_gettime(CLOCK_REALTIME, &ts);
+
     preparse();
+
 	struct timespec ts2;
 	//sleep(2); // test time measurement
 	clock_gettime(CLOCK_REALTIME, &ts2);
@@ -444,6 +452,7 @@ int 	preprocess(char *ptr)
 			printf ("Compiled: '%s' ERR %d sec %d usec\n", ptr, dts, dtu);
 		}
 	fclose(ppfp2);
+
 	if(catpre)
 		{
 		printf("Displaying pre processed file:\n\n");
@@ -455,6 +464,4 @@ int 	preprocess(char *ptr)
     return ret_val;
 }
 
-
-
-
+// EOF

@@ -35,6 +35,7 @@
 #define TESTPCOMP
 
 extern FILE *ppfp, *ppfp2;
+extern int verbose;
 
 static  char    tmp_str3[128];
 static  int     str2int(char *ptr);
@@ -97,53 +98,65 @@ all1:   all2
 
 all2:   def1
         {
-        //printf(" { all1 def1 '%s'} ", (char*)$1);
+        if(debuglevel > 0)
+            printf(" { all1 def1 '%s'} ", (char*)$1);
         }
         | undef1
         {
-        //printf("{all1 undef1 x'%s'  '%s'}\n", (char*)$1, (char*)$2);
+        if(debuglevel > 0)
+            printf("{all1 undef1 x'%s' }\n", (char*)$1);
         }
         | err1
         {
-        //printf("{all1 err1 x'%s'  '%s'}\n", (char*)$1, (char*)$2);
+        if(debuglevel > 0)
+            printf("{all1 err1 x'%s'  }\n", (char*)$1);
         }
         | msg1
         {
-        //printf("{all1 msg1 x'%s'  '%s'}\n", (char*)$1, (char*)$2);
+        if(debuglevel > 0)
+            printf("{all1 msg1 x'%s'  }\n", (char*)$1);
         }
         | mac1
         {
-        //printf("{all1 mac1 x'%s'  '%s'}\n", (char*)$1, (char*)$2);
+        if(debuglevel > 0)
+            printf("{all1 mac1 x'%s'  }\n", (char*)$1);
         }
         | ifdef1
         {
-        //printf("{all1 ifdef1 x'%s'  '%s'}\n", (char*)$1, (char*)$2);
+        if(debuglevel > 0)
+            printf("{all1 ifdef1 x'%s'  }\n", (char*)$1);
         }
         | elifdef1
         {
-        //printf("{all1 elifdef1 x'%s'  '%s'}\n", (char*)$1, (char*)$2);
+        if(debuglevel > 0)
+            printf("{all1 elifdef1 x'%s'  }\n", (char*)$1);
         }
         | else1
         {
-        //printf("{all1 else1 x'%s'  '%s'}\n", (char*)$1, (char*)$2);
+        if(debuglevel > 0)
+            printf("{all1 else1 x'%s'  }\n", (char*)$1);
         }
         | endif1
         {
-        //printf("{all1 endif1 x'%s' }\n", (char*)$1);
+        if(debuglevel > 0)
+            printf("{all1 endif1 x'%s' }\n", (char*)$1);
         }
         | ch2
         {
-        //printf("{all1: ch2 x '%s'  '%s'}\n", (char*)$1);
+        //if(debuglevel > 0)
+        //    printf("{all1: ch2 x '%s'  '%s'}\n", (char*)$1);
         }
         | num1
         {
-        //printf("{all1: num1 x '%s'  '%s'}\n", (char*)$1);
+        if(debuglevel > 0)
+            printf("{all1: num1 x '%s' }\n", (char*)$1);
         }
 ;
 
 def1:  sp1 DEF sp2 ID spnl
         {
-        //printf("{def1 '%s' '%s'}\n", (char*)$2, (char*)$4);
+        if(debuglevel > 0)
+            printf("{def1 '%s' '%s'}\n", (char*)$2, (char*)$4);
         Symbol  *st2 = push_symtab((char*)$4, "", "",  DECL_DEFINE, 0);
         }
         |  sp1 DEF spnl
@@ -153,7 +166,8 @@ def1:  sp1 DEF sp2 ID spnl
 
 undef1:  sp1 UNDEF sp2 ID spnl
         {
-        //printf("{undef1 '%s' '%s'}\n", (char*)$2, (char*)$4);
+        if(debuglevel > 0)
+            printf("{undef1 '%s' '%s'}\n", (char*)$2, (char*)$4);
         Symbol  *st2 = lookup_symtab((char*)$4, DECL_DEFINE);
         if(st2)
             {
@@ -223,7 +237,8 @@ mac1:   MAC sp1 ID sp1 STR spnl
 
 ifdef1:  sp1 IFDEF sp2 ID spnl
         {
-        //printf("{ifdef1 '%s' '%s'}\n", (char*)$2, (char*)$4);
+        if(debuglevel > 0)
+            printf("{ifdef1 '%s' '%s'}\n", (char*)$2, (char*)$4);
 
         if(lookup_symtab((char*)$4, DECL_DEFINE) != NULL)
             {
@@ -238,7 +253,8 @@ ifdef1:  sp1 IFDEF sp2 ID spnl
 
 elifdef1:  sp1 ELIFDEF sp2 ID spnl
         {
-        //printf("{elifdef1 '%s' '%s'}\n", (char*)$2, (char*)$4);
+        if(debuglevel > 0)
+            printf("{elifdef1 '%s' '%s'}\n", (char*)$2, (char*)$4);
 
         if(hasdefine == 1)
             {
@@ -256,14 +272,16 @@ elifdef1:  sp1 ELIFDEF sp2 ID spnl
 
 endif1:  sp1 ENDIF spnl
         {
-        //printf("{endif1 '%s'}\n", (char*)$2);
+        if(debuglevel > 0)
+            printf("{endif1 '%s'}\n", (char*)$2);
         hasdefine = 2;
         }
 ;
 
 else1:  ELSE
         {
-        //printf("{else1 '%s'}\n", (char*)$1);
+        if(debuglevel > 0)
+            printf("{else1 '%s'}\n", (char*)$1);
 
         if(hasdefine == 1)
             hasdefine = 2;
@@ -302,37 +320,44 @@ ops1:   PLUS
 
 ch1:   CH
       {
-      //printf(" { CH '%s' }", (char*)$2);
+      //if(debuglevel > 0)
+      //      printf(" { CH '%s' }", (char*)$2);
       if(hasdefine == 2)
             fprintf(ppfp2, "%s", (char*)$1);
       }
       | id1
-      { //printf("{ ID '%s' }", (char*)$1);
+      { if(debuglevel > 0)
+            printf("{ ID '%s' }", (char*)$1);
       if(hasdefine == 2)
             fprintf(ppfp2, "%s", (char*)$1);
       }
       | SP
-      { //printf("{ SP '%s' }", (char*)$1);
+      { if(debuglevel > 0)
+            printf("{ SP '%s' }", (char*)$1);
       if(hasdefine == 2)
             fprintf(ppfp2, "%s", (char*)$1);
       }
       | ops1
-      { //printf("{ ops '%s' }", (char*)$1);
+      { if(debuglevel > 0)
+            printf("{ ops '%s' }", (char*)$1);
       if(hasdefine == 2)
             fprintf(ppfp2, "%s", (char*)$1);
       }
       | NL
-      { //printf("{ NL '%s' }", (char*)$1);
+      { if(debuglevel > 0)
+            printf("{ NL '%s' }", (char*)$1);
       if(hasdefine == 2)
             fprintf(ppfp2, "%s", (char*)$1);
       }
       | STR
-      { //printf("{ STR '%s}' ", (char*)$1);
+      { if(debuglevel > 0)
+            printf("{ STR '%s}' ", (char*)$1);
       if(hasdefine == 2)
             fprintf(ppfp2, "%s", (char*)$1);
       }
       | COMMENT
-      { //printf("{ COM '%s}' ", (char*)$1);
+      { if(debuglevel > 0)
+            printf("{ COM '%s}' ", (char*)$1);
       if(hasdefine == 2)
             fprintf(ppfp2, "%s", (char*)$1);
       }
@@ -340,7 +365,8 @@ ch1:   CH
 
 id1:   ID
     {
-    //printf("{ id1 : ID '%s}' ", (char*)$1);
+    if(debuglevel > 0)
+            printf("{ id1 : ID '%s}' ", (char*)$1);
     Symbol *sp = lookup_symtab((char*)$1, DECL_MACRO);
     if(sp)
         {
@@ -530,5 +556,4 @@ int     str2int(char *ptr)
     return ret;
 }
 
-
-
+// EOF
