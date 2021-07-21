@@ -1,13 +1,15 @@
-                            SYNTAX
+                                SYNTAX
 
-  Syntax of the pcomp source file. This is not meant to be a spec, more
-like a draft or idea starter.
+  Syntax of the pcomp source file. This is not meant to be a spec, more like
+  a spec draft or an idea starter.
 
  Overall structure:
 
 	One or more of the following:
 
 		preprocessor statement(s)
+		platform statement(s)
+        import statement(s)
 		debug statement(s)
         comment(s)
         doc comment(s)
@@ -21,19 +23,30 @@ like a draft or idea starter.
 
 		lines with # as the first non space
 		from // to end of line
+		from dnl to end of line
 		between	/* */
 
  Doc comments:
 
 		lines with ## as the first non space
 		from /// to end of line
+        between	/**  */
 
  Line continuation:
 
 	Lines are continued on the next line if backslash is at the end.
-	Trailing spaces? no
+	Trailing spaces? no?
 
- Data declarations:
+ Platform statement(s):
+
+    The generated code
+    platform    name  native / cross
+
+ Import statement(s):
+
+    Import interface from source file or interface file
+
+  Data declarations:
 
 	type varname;
 	type varname1, varname2 .... varnameN;
@@ -87,11 +100,28 @@ like a draft or idea starter.
            type : dimention
            } array_name;
 
+
+    Struct access:
+
+    type_name struct_name;
+
+    struct_name.element1
+    struct_name.element2
+           .....
+
+    Pointer access:
+        *struct_name
+
+    Pointer production:
+        &struct_name
+
+    Member access:
+
   Functions:
 
-	function funcname { funcbody }
+	funct funcname { funcbody }
 
-	function funcname ( arg declarelist ) { funcbody }
+	funct funcname ( arg declarelist ) { funcbody }
 
 		arg declerelist:
 		    type1 var, type2 var ...
@@ -115,6 +145,9 @@ like a draft or idea starter.
 		Because the function calls do not change the stack, functions can
 		be called without a prototype. The function itself is responsible
 		to restore the stack allocated during execution.
+
+    unit funcname ( arg declarelist ) { funcbody }
+
 
  Allocations:
 
@@ -163,6 +196,7 @@ like a draft or idea starter.
 
 		*		multiply
 		/ 		divide
+		/% 		int divide
 		% 		modulus
 		+		addition
 		-		substration
@@ -192,11 +226,11 @@ like a draft or idea starter.
 		>		larger  (left larger then right)
         <		smaller
 		>=		larger equal
-        <=		smaller eaual
+        <=		smaller equal
         ==		equal
         !=		not equal
 
-  Assinments:
+  Assignments:
 
 		=		expr
 		=		cond
@@ -218,13 +252,21 @@ like a draft or idea starter.
 
  	loop
 	 	{
+        decl;
+
+        enter { decl init }
+        leave { decl closure }
+        cont  { decl closure }
+
 	 	if(condition)
-		 	break;
+		 	break level;
+
         if(condition2)
             continue;
 	 	}
 
-  Looping creates an infinite loop, and break conditions need to be tested.
+  Looping creates an infinite loop, and break conditions need to be tested. Enter
+  clause executes on entry; leave clause executes on exit;
 
  Execution control:
 
@@ -262,7 +304,9 @@ conflicting vars and func names are allowed either.
 
         __file__  __line__  __func__ __platform__ __target__
         __version__
-
+        __code_version__
+        __author__
+        __copyright__
 
 	%define DEFVAR
 
@@ -282,6 +326,13 @@ conflicting vars and func names are allowed either.
 
 	%message  "Message to display"
 
+
+ The notion of multipass items.
+
+    preprocess
+    de-comment -> optional interface file
+    compile
+    generate assembly
 
 # EOF
 
