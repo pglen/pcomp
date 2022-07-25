@@ -157,7 +157,8 @@
 
 		The kill exception terminates the application by default.
 		Other exceptions set (increment) the appropriate exception variable,
-		(excpt) and return without any action.
+		(excpt) and return without any action. The long exception code is then
+        called by way of stack patching, simiar to the low side of the interrupts.
 		It is the application's responsibility to respond to the exception
 		condition by checking the variable against a saved value.
 		The exception pointer variable is reset, and exception report reset automatically.

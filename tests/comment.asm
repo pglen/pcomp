@@ -1,18 +1,48 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;                                                                         
-;   Compile with FASM                                                     
+;   Compile with NASM                                                     
 ;                                                                         
                                                                           
-use32                                                                     
-               org    0x0                                                 
+        global main                                                       
+        extern printf                                                     
+        section .text                                                     
                                                                           
-               db    'SIMOS01'               ; 8 byte id                  
-               dd     0x01                   ; header version             
-               dd     START_CODE             ; start of code              
-               dd     END_CODE               ; size of image              
-               dd     0x100000               ; memory for app             
-               dd     0x7fff0                ; esp                        
-               dd     0x0 , 0x0              ; I_Param , I_Icon           
+main:                                                                     
+        push    rdx                     ; callee-save registers           
+        push    rsi                     ; callee-save registers           
+        push    rdi                                                       
+                                                                          
+        mov     rsi, 1                  ; current value                   
+        mov     rdi, 10                 ; counter                         
+                                                                          
+L1:                                                                       
+        push    rsi                     ; caller-save register            
+        push    rdi                     ; caller-save register            
+                                                                          
+        mov     rdx, rdi                ; third rdx                       
+                                        ; sec parm rsi (alread OK)        
+        mov     rdi, format             ; set 1st parameter (format)      
+                                                                          
+        call    printf                                                    
+                                                                          
+        pop     rdi                                                       
+        pop     rsi                                                       
+                                                                          
+        add     rsi, rsi                ; double value                    
+        dec     rdi                     ; keep counting                   
+                                                                          
+        jne     L1                                                        
+                                                                          
+        pop     rdi                                                       
+        pop     rsi                                                       
+        pop     rdx                                                       
+        ret                                                               
+                                                                          
+        section .data                                                     
+                                                                          
+format: db      '-307701000 0', 10, 0                                          
+format2: db      "Hello world", 10, 0                                   
+                                                                          
 ; Data
 
 START_CODE:
